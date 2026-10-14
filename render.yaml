@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: asian-drag-bike-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: asian-drag-bike-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "*"
+
+databases:
+  - name: asian-drag-bike-db
+    plan: free
+    databaseName: asian_drag_bike
+    user: asian_drag_bike

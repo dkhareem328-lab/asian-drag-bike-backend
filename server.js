@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import http from 'node:http';
 import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
 import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
@@ -156,4 +157,8 @@ server.on('upgrade', (request, socket, head) => {
   } catch { socket.destroy(); }
 });
 
-server.listen(PORT, () => console.log(`Asian Drag Bike backend listening on :${PORT}`));
+async function boot() {
+  await pool.query(await fs.readFile(new URL('./schema.sql', import.meta.url), 'utf8'));
+  server.listen(PORT, () => console.log(`Asian Drag Bike backend listening on :${PORT}`));
+}
+boot().catch((error) => { console.error('Database initialization failed', error); process.exit(1); });
